@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>学習状況</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>学習状況</h1>
+        <p>これまでのクイズの結果です。苦手な動詞をチェックしよう！</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>原形</th>
+                    <th>過去形</th>
+                    <th>過去分詞形</th>
+                    <th>正解数</th>
+                    <th>不正解数</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for verb in verbs %}
+                <tr>
+                    <td>{{ verb.infinitive }}</td>
+                    <td>{{ verb.past_simple }}</td>
+                    <td>{{ verb.past_participle }}</td>
+                    <td>{{ verb.correct_count }}</td>
+                    <td>{{ verb.incorrect_count }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">データがありません。</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('quiz') }}" class="back-link">クイズに戻る</a>
+    </div>
+</body>
+</html>

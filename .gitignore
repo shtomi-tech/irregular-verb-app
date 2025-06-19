@@ -1,0 +1,12 @@
+# Pythonの仮想環境フォルダ
+venv/
+
+# 環境変数ファイル（APIキーなど）
+.env
+
+# Pythonが自動生成する一時ファイル
+__pycache__/
+*.pyc
+
+# データベースファイル
+verbs.db

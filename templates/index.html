@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>不規則動詞マスター</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .verb-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .verb-box, input[type="text"] {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 150px;
+            text-align: center;
+        }
+        .verb-box {
+            border: 2px solid #ccc;
+        }
+        input[type="text"] {
+            border: 2px solid #007bff;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        #result-area {
+            margin-top: 30px;
+            font-size: 22px;
+            font-weight: bold;
+            height: 30px;
+        }
+        .correct {
+            color: #28a745;
+        }
+        .incorrect {
+            color: #dc3545;
+        }
+        #next-btn {
+            display: none;
+            margin-top: 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>不規則動詞クイズ！</h1>
+    
+    <p><a href="{{ url_for('stats') }}">学習状況を見る</a></p>
+
+    <p>空欄に入る正しい形を答えよう</p>
+    
+    <form id="quiz-form">
+        <div class="verb-container">
+            {% for i in range(3) %}
+                {% if i == blank_index %}
+                    <input type="text" name="user_answer" placeholder="???" autofocus required>
+                {% else %}
+                    <div class="verb-box">{{ verb_set[i] }}</div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <input type="hidden" name="correct_answer" value="{{ verb_set[blank_index] }}">
+        <input type="hidden" name="verb_id" value="{{ verb_id }}">
+
+        <button type="submit">こたえあわせ</button>
+    </form>
+
+    <div id="result-area"></div>
+    <button id="next-btn">次の問題へ</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('quiz-form');
+            const resultArea = document.getElementById('result-area');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = form.querySelector('button');
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const formData = new FormData(form);
+                try {
+                    const response = await fetch('/check', { method: 'POST', body: formData });
+                    const data = await response.json();
+                    resultArea.textContent = data.message;
+                    resultArea.className = data.result === 'correct' ? 'correct' : 'incorrect';
+                    submitBtn.disabled = true;
+                    nextBtn.style.display = 'inline-block';
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                location.reload();
+            });
+        });
+    </script>
+</body>
+</html>
